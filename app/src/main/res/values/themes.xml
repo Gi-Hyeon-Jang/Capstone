@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Capstone_1" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green</item>
+        <item name="colorAccent">@color/teal_200</item>
+    </style>
+    <style name="CustomRadioButton" parent="Theme.AppCompat.Light">
+        <item name="android:buttonTint">#E8BB1E</item> <!-- 버튼 색상 노란색 -->
+        <item name="android:textColor">#E8BB1E</item> <!-- 텍스트 색상 노란색 -->
+    </style>
+    <style name="CustomRadioButton2" parent="Theme.AppCompat.Light">
+        <item name="android:buttonTint">#FFF7D8</item> <!-- 버튼 색상 노란색 -->
+        <item name="android:textColor">#FFF7D8</item> <!-- 텍스트 색상 노란색 -->
+    </style>
+</resources>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:context=".UserInputActivity">
+
+    <FrameLayout
+        android:id="@+id/frameLayout12"
+        android:layout_width="389dp"
+        android:layout_height="341dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout17">
+
+
+        <ImageButton
+            android:id="@+id/submitButton"
+            android:layout_width="155dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom|center"
+            android:background="#00FFFFFF"
+            app:srcCompat="@drawable/summitbutton"
+            android:contentDescription="업로드 버튼"/>
+
+        <ImageView
+            android:id="@+id/imageView12"
+            android:layout_width="333dp"
+            android:layout_height="230dp"
+            android:layout_weight="1"
+            android:translationY="30dp"
+            app:srcCompat="@drawable/uploadexer" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="90dp"
+            android:layout_height="34dp"
+            app:srcCompat="@drawable/uploadex" />
+
+        <RadioGroup
+            android:id="@+id/activityLevelGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:translationY="5dp">
+
+            <RadioButton
+                android:id="@+id/level1"
+                style="@style/CustomRadioButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <RadioButton
+                android:id="@+id/level2"
+                style="@style/CustomRadioButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <RadioButton
+                android:id="@+id/level3"
+                style="@style/CustomRadioButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <RadioButton
+                android:id="@+id/level4"
+                style="@style/CustomRadioButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <RadioButton
+                android:id="@+id/level5"
+                style="@style/CustomRadioButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+        </RadioGroup>
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout18"
+        android:layout_width="264dp"
+        android:layout_height="108dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="227dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/rectangle6" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/logo" />
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="110dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="80dp"
+            app:srcCompat="@drawable/userconfig" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout17"
+        android:layout_width="390dp"
+        android:layout_height="236dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout18">
+
+        <View
+            android:id="@+id/backgroundView"
+            android:layout_width="match_parent"
+            android:layout_height="245dp"
+            android:background="@color/green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/weightInput"
+            android:layout_width="345dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:hint="몸무게 (kg)"
+            android:inputType="numberDecimal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Ivory"
+            android:textColorHint="@color/Ivory" />
+
+        <EditText
+            android:id="@+id/heightInput"
+            android:layout_width="345dp"
+            android:layout_height="53dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/transparent"
+            android:hint="키 (cm)"
+            android:inputType="numberDecimal"
+            android:textColor="@color/Ivory"
+            android:textColorHint="@color/Ivory" />
+
+        <EditText
+            android:id="@+id/ageInput"
+            android:layout_width="345dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:background="@android:color/transparent"
+            android:hint="나이"
+            android:inputType="number"
+            android:textColor="@color/Ivory"
+            android:textColorHint="@color/Ivory" />
+
+        <RadioGroup
+            android:id="@+id/genderGroup"
+            android:layout_width="124dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="170dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/maleRadio"
+                style="@style/CustomRadioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="남성"
+                android:textColor="@color/Ivory" />
+
+            <RadioButton
+                android:id="@+id/femaleRadio"
+                style="@style/CustomRadioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="여성"
+                android:textColor="@color/Ivory" />
+        </RadioGroup>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
