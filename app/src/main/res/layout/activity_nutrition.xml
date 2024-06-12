@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/selectImageButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="이미지 선택" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/selectImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이미지 선택" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="50dp"
+            android:text="저장" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="100dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="50dp"
+            android:text="취소" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/calorieEditText"
@@ -72,33 +93,14 @@
         android:layout_height="60dp"
         android:hint="미네랄 (mg)" />
 
-    <FrameLayout
-        android:layout_width="376dp"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:text="저장" />
-
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="102dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:text="취소" />
-
-
-        <ImageButton
-            android:id="@+id/imageButton5"
-            android:layout_width="75dp"
-            android:layout_height="54dp"
-            android:layout_gravity="right"
-            android:background="#00FFFFFF"
-            android:contentDescription="뒤로가기 버튼"
-            app:srcCompat="@drawable/back" />
-    </FrameLayout>
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="62dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="92dp"
+        android:background="#00FFFFFF"
+        android:contentDescription="뒤로가기 버튼"
+        app:srcCompat="@drawable/back" />
 
 </LinearLayout>

@@ -63,6 +63,24 @@
                 android:layout_weight="1" />
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="총합 단백질"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalProtein"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </TableRow>
+
         <TableRow>
             <TextView
                 android:layout_width="0dp"
@@ -88,21 +106,6 @@
 
             <TextView
                 android:id="@+id/totalSaturatedFatText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="총합 트랜스 지방"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/totalTransFatText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />

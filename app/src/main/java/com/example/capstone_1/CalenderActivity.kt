@@ -41,7 +41,7 @@ class CalenderActivity : AppCompatActivity() {
             binding.totalSugarsText.text = it.totalSugars.toString()
             binding.totalFatText.text = it.totalFat.toString()
             binding.totalSaturatedFatText.text = it.totalSaturatedFat.toString()
-            binding.totalTransFatText.text = it.totalProtein.toString()
+            binding.totalProtein.text = it.totalProtein.toString()
             binding.totalCholesterolText.text = it.totalCholesterol.toString()
             binding.totalSodiumText.text = it.totalSodium.toString()
             binding.totalVitaminsText.text = it.totalVitamins.toString()
@@ -53,7 +53,7 @@ class CalenderActivity : AppCompatActivity() {
             binding.totalSugarsText.text = ""
             binding.totalFatText.text = ""
             binding.totalSaturatedFatText.text = ""
-            binding.totalTransFatText.text = ""
+            binding.totalProtein.text = ""
             binding.totalCholesterolText.text = ""
             binding.totalSodiumText.text = ""
             binding.totalVitaminsText.text = ""

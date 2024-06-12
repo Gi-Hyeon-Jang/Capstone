@@ -30,6 +30,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class NutritionActivity : ComponentActivity() {
 
@@ -62,7 +63,12 @@ class NutritionActivity : ComponentActivity() {
             startActivity(intent)
         }
         databaseHelper = NutritionDatabaseHelper(this)
-        client = OkHttpClient()
+
+        client = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build()
 
         calorieEditText = findViewById(R.id.calorieEditText)
         carbohydrateEditText = findViewById(R.id.carbohydrateEditText)
@@ -94,52 +100,58 @@ class NutritionActivity : ComponentActivity() {
 
     private fun uploadImageToServer(uri: Uri) {
         lifecycleScope.launch {
-            val bitmap = withContext(Dispatchers.IO) {
-                MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            }
-            val file = File(cacheDir, "upload_image.jpg")
+            try {
+                val bitmap = withContext(Dispatchers.IO) {
+                    MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                }
+                val file = File(cacheDir, "upload_image.jpg")
 
-            withContext(Dispatchers.IO) {
-                val outputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                outputStream.flush()
-                outputStream.close()
-            }
-            Log.d("NutritionActivity", "Uploading image to server...")
+                withContext(Dispatchers.IO) {
+                    val outputStream = FileOutputStream(file)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+                    outputStream.flush()
+                    outputStream.close()
+                }
+                Log.d("NutritionActivity", "Uploading image to server...")
 
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.name, file.asRequestBody("image/jpeg".toMediaTypeOrNull()))
-                .build()
-            Log.d("NutritionActivity", "Uploading image to server...")
+                val requestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.name, file.asRequestBody("image/jpeg".toMediaTypeOrNull()))
+                    .build()
 
-            val request = Request.Builder()
-                .url("http://221.139.98.169:5000/food_nutrients")
-                .addHeader("Connection", "close")
-                .post(requestBody)
-                .build()
+                val request = Request.Builder()
+                    .url("http://221.139.98.169:5000/food_nutrients")
+                    .addHeader("Connection", "close")
+                    .post(requestBody)
+                    .build()
 
-            withContext(Dispatchers.IO) {
-                try {
-                    val response = client.newCall(request).execute()
-                    if (response.isSuccessful) {
-                        val responseBody = response.body?.string()
-                        responseBody?.let {
-                            Log.d("NutritionActivity", "JSON Response: $it")
-                            val nutrients = parseNutrientsResponse(it)
-                            withContext(Dispatchers.Main) {
-                                updateEditTexts(nutrients)
-                                Toast.makeText(this@NutritionActivity, "업로드 성공", Toast.LENGTH_SHORT).show()
-                            }
-                        } ?: throw IOException("Unexpected empty response body")
-                    } else {
-                        throw IOException("Unexpected response code: ${response.code}")
+                withContext(Dispatchers.IO) {
+                    try {
+                        val response = client.newCall(request).execute()
+                        if (response.isSuccessful) {
+                            val responseBody = response.body?.string()
+                            responseBody?.let {
+                                Log.d("NutritionActivity", "JSON Response: $it")
+                                val nutrients = parseNutrientsResponse(it)
+                                withContext(Dispatchers.Main) {
+                                    updateEditTexts(nutrients)
+                                    Toast.makeText(this@NutritionActivity, "업로드 성공", Toast.LENGTH_SHORT).show()
+                                }
+                            } ?: throw IOException("Unexpected empty response body")
+                        } else {
+                            throw IOException("Unexpected response code: ${response.code}")
+                        }
+                    } catch (e: IOException) {
+                        Log.e("NutritionActivity", "Image upload failed", e)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@NutritionActivity, "업로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } catch (e: IOException) {
-                    Log.e("NutritionActivity", "Image upload failed", e)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@NutritionActivity, "업로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                }
+            } catch (e: Exception) {
+                Log.e("NutritionActivity", "Image processing failed", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@NutritionActivity, "이미지 처리 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

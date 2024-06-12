@@ -3,11 +3,24 @@ package com.example.capstone_1
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -16,6 +29,9 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     private lateinit var bmiViewModel: BMIViewModel
     private lateinit var nutritionDatabaseHelper: NutritionDatabaseHelper
+    private val client = OkHttpClient()
+    private val serverUrl = "http://221.139.98.169:5000/recommend"
+    private lateinit var RecommendTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +39,8 @@ class MainActivity : ComponentActivity() {
 
         bmiViewModel = ViewModelProvider(this).get(BMIViewModel::class.java)
         nutritionDatabaseHelper = NutritionDatabaseHelper(this)
-
+        RecommendTextView = findViewById(R.id.RecommendTextView)
+        RecommendTextView.visibility= View.VISIBLE
         val backButton: ImageButton = findViewById(R.id.goToNutrition)
         backButton.setOnClickListener {
             val intent = Intent(this, NutritionActivity::class.java)
@@ -81,6 +98,7 @@ class MainActivity : ComponentActivity() {
             val totalProtein = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_PROTEIN))
             val totalCholesterol = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_CHOLESTEROL))
             val totalSodium = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_SODIUM))
+
             findViewById<TextView>(R.id.textView1).text = df.format(totalCalorie)
             findViewById<TextView>(R.id.textView2).text = df.format(totalCalorie / state.BMICalorie * 100)
             findViewById<TextView>(R.id.textView3).text = df.format(totalCarbohydrate)
@@ -98,7 +116,19 @@ class MainActivity : ComponentActivity() {
             findViewById<TextView>(R.id.textView15).text = df.format(totalCholesterol)
             findViewById<TextView>(R.id.textView16).text = df.format(totalCholesterol / state.BMICholesterol * 100)
 
-}
+            // 추천 요청을 보냅니다.
+            Handler(Looper.getMainLooper()).postDelayed({
+                sendRecommendationRequest(
+                    totalCarbohydrate / state.BMICarbohydrate * 100,
+                    totalSugars / state.BMISugars * 100,
+                    totalProtein / state.BMIProtein * 100,
+                    totalFat / state.BMIFat * 100,
+                    totalSaturatedFat / state.BMISaturatedFat * 100,
+                    totalSodium / state.BMISodium * 100,
+                    totalCholesterol / state.BMICholesterol * 100
+                )
+            }, 5000)
+        }
 
         cursor.close()
     }
@@ -127,6 +157,71 @@ class MainActivity : ComponentActivity() {
         imageButton4.setOnClickListener {
             val intent = Intent(this, QueryListActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+
+    private fun sendRecommendationRequest(
+        carbohydratePercentage: Double,
+        sugarsPercentage: Double,
+        proteinPercentage: Double,
+        fatPercentage: Double,
+        saturatedFatPercentage: Double,
+        sodiumPercentage: Double,
+        cholesterolPercentage: Double
+    ) {
+        Log.d("Recommendation", "Preparing recommendation request")
+
+        val nutrientRatios = listOf(
+            "Carbohydrate" to Pair(1, carbohydratePercentage),
+            "Sugars" to Pair(2, sugarsPercentage),
+            "Protein" to Pair(3, proteinPercentage),
+            "Fat" to Pair(4, fatPercentage),
+            "SaturatedFat" to Pair(5, saturatedFatPercentage),
+            "Sodium" to Pair(6, sodiumPercentage),
+            "Cholesterol" to Pair(7, cholesterolPercentage)
+        ).sortedBy { it.second.second }.take(3)
+
+        val json = JSONObject().apply {
+            put("a", nutrientRatios[0].second.first)
+            put("b", nutrientRatios[1].second.first)
+            put("c", nutrientRatios[2].second.first)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.d("Recommendation", "Sending recommendation request")
+
+                val requestBody = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+                val request = Request.Builder()
+                    .url(serverUrl)
+                    .addHeader("Connection", "close")
+                    .post(requestBody)
+                    .build()
+
+                client.newCall(request).execute().use { response ->
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        responseBody?.let {
+                            val result = JSONObject(it).getString("result")
+                            withContext(Dispatchers.Main) {
+                                RecommendTextView.text = result
+                            }
+                            Log.d("Recommendation", "Recommendation successful: $result")
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            RecommendTextView.text = "서버 응답 기다리는 중...."
+                        }
+                        Log.d("Recommendation", "Recommendation failed: ${response.code}")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    RecommendTextView.text = "서버 응답 기다리는 중...."
+                }
+                Log.d("Recommendation", "Recommendation request failed: ${e.message}")
+            }
         }
     }
 }
