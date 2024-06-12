@@ -5,7 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -37,6 +39,9 @@ class UploadServerActivity : ComponentActivity() {
     private var extractFoodResult: List<String> = emptyList()
     private lateinit var resultRecyclerView: RecyclerView
     private lateinit var resultAdapter: ResultAdapter
+    private var selectedResult: String? = null
+    private var selectedResult2: String? = null
+
 
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -58,11 +63,7 @@ class UploadServerActivity : ComponentActivity() {
                 else -> 1
             }
         }
-        val backButton: Button = findViewById(R.id.buttonBackToMain)
-        backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+
         val uploadButton: Button = findViewById(R.id.uploadButton)
         uploadButton.setOnClickListener {
             pickImage.launch("image/*")
@@ -74,7 +75,11 @@ class UploadServerActivity : ComponentActivity() {
                 uploadImageToServer(uri, selectedOption)
             }
         }
-
+        val backButton: ImageButton = findViewById(R.id.buttonBackToMain)
+        backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         val checkButton: Button = findViewById(R.id.checkButton)
         checkButton.setOnClickListener {
             checkResults()
@@ -85,8 +90,12 @@ class UploadServerActivity : ComponentActivity() {
         resultAdapter = ResultAdapter(emptyList())
         resultRecyclerView.adapter = resultAdapter
 
-        // SearchActivity에서 넘어온 인텐트를 처리합니다.
-        handleIntent()
+        // Intent에서 데이터 받기
+        selectedResult2 = intent.getStringExtra("selectedResult")
+        Log.d("UploadServerActivity", "Selected Result: $selectedResult") // Log the value of selectedResult
+        selectedResult2?.let {
+            uploadTextToServer(it)
+        }
     }
 
     private fun createOkHttpClient(): OkHttpClient {
@@ -132,10 +141,11 @@ class UploadServerActivity : ComponentActivity() {
                 .addHeader("Connection", "close")
                 .post(requestBody)
                 .build()
-
+            Log.d("UploadServerActivity","image")
             retryRequest(client, request, 3) { response ->
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
+                    Log.d("UploadServerActivity", "Response Body: $responseBody") // 응답 본문 로그 출력
                     responseBody?.let {
                         when (option) {
                             1 -> {
@@ -147,6 +157,7 @@ class UploadServerActivity : ComponentActivity() {
                             }
                             2 -> {
                                 extractFoodResult = parseExtractFoodResponse(it)
+                                Log.d("UploadServerActivity", "Extract Food Result: $extractFoodResult") // 파싱 결과 로그 출력
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(this@UploadServerActivity, "음식 검사 성공", Toast.LENGTH_SHORT).show()
                                 }
@@ -179,7 +190,7 @@ class UploadServerActivity : ComponentActivity() {
                 attempt++
                 if (attempt >= retries) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@UploadServerActivity, "업로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Log.d("UploadServerActivity", "Upload failed: ${e.message}")
                     }
                 }
             }
@@ -200,7 +211,7 @@ class UploadServerActivity : ComponentActivity() {
 
     private fun parseExtractFoodResponse(json: String): List<String> {
         val jsonObject = JSONObject(json)
-        val matches = jsonObject.getString("matches")
+        val matches = jsonObject.getString("result")
         val jsonArray = JSONArray(matches)
         val items = mutableListOf<String>()
         for (i in 0 until jsonArray.length()) {
@@ -227,18 +238,63 @@ class UploadServerActivity : ComponentActivity() {
             .build()
 
         lifecycleScope.launch {
+            Log.d("UploadServerActivity","check")
+
+            retryRequest(client, request, 3) { response ->
+                response.body?.use { responseBody ->
+                    if (response.isSuccessful) {
+                        val jsonObject = JSONObject(responseBody.string())
+                        val matchesString = jsonObject.getString("matches")
+                        val results = matchesString
+                            .removeSurrounding("[", "]")
+                            .split(", ")
+                            .map { it.removeSurrounding("'", "'") }
+                        withContext(Dispatchers.Main) {
+                            if (results.isEmpty() || results[0] == "충돌 성분 없음") {
+                                Log.d("UploadServerActivity", "충돌 성분 없습니다!")
+                                resultAdapter.updateData(listOf("충돌 성분 없습니다!"))
+                            } else {
+                                resultAdapter.updateData(results)
+                            }
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Log.d("UploadServerActivity", "결과 조회 실패")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun uploadTextToServer(text: String) {
+        val client = createOkHttpClient()
+
+        lifecycleScope.launch {
+            val json = JSONObject().apply {
+                put("name", text)
+            }
+            val requestBody = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+            val request = Request.Builder()
+                .url("http://221.139.98.169:5000/food_ingre_text")
+                .post(requestBody)
+                .build()
+            Log.d("UploadServerActivity","food")
+
             retryRequest(client, request, 3) { response ->
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
+                    Log.d("UploadServerActivity", "Response Body: $responseBody") // 응답 본문 로그 출력
                     responseBody?.let {
-                        val results = parseJsonResponse(it)
+                        extractFoodResult = parseExtractFoodResponse(it)
+                        Log.d("UploadServerActivity", "Extract Food Result: $extractFoodResult") // 파싱 결과 로그 출력
                         withContext(Dispatchers.Main) {
-                            resultAdapter.updateData(results)
+                            Toast.makeText(this@UploadServerActivity, "음식 검사 성공", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@UploadServerActivity, "결과 조회 실패", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@UploadServerActivity, "업로드 실패", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -252,14 +308,5 @@ class UploadServerActivity : ComponentActivity() {
             items.add(jsonArray.getString(i))
         }
         return items
-    }
-
-    private fun handleIntent() {
-        val selectedResult = intent.getStringExtra("selectedResult")
-        selectedResult?.let {
-            // selectedResult 값을 사용하여 필요한 작업 수행
-            // 예: 업로드 함수 호출 등
-            uploadImageToServer(Uri.parse(it), 2) // 예시: selectedResult를 사용하여 URI로 변환 후 업로드 호출
-        }
     }
 }

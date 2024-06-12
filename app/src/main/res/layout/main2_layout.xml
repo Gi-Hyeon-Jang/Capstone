@@ -44,6 +44,15 @@
             android:layout_height="34dp"
             app:srcCompat="@drawable/uploadex" />
 
+        <ImageButton
+            android:id="@+id/buttonBackToMain"
+            android:layout_width="75dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|start"
+            android:background="#00FFFFFF"
+            app:srcCompat="@drawable/back"
+            android:contentDescription="뒤로가기 버튼"/>
+
         <RadioGroup
             android:id="@+id/activityLevelGroup"
             android:layout_width="wrap_content"

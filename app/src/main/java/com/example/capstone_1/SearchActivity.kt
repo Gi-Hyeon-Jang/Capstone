@@ -2,9 +2,10 @@ package com.example.capstone_1
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,19 +16,17 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
-import java.util.concurrent.TimeUnit
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchInput: EditText
-    private lateinit var searchButton: Button
+    private lateinit var searchButton: ImageButton // Change Button to ImageButton
     private lateinit var searchResultsListView: ListView
     private var selectedResult: String? = null
 
-    private val client = createOkHttpClient()
+    private val client = OkHttpClient()
     private val serverUrl = "http://221.139.98.169:5000/food_name"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +34,13 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         searchInput = findViewById(R.id.searchInput)
-        searchButton = findViewById(R.id.searchButton)
+        searchButton = findViewById(R.id.searchButton) // No need to change this line
         searchResultsListView = findViewById(R.id.searchResultsListView)
-
+        val backButton: ImageButton = findViewById(R.id.buttonBackToMain)
+        backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         searchButton.setOnClickListener {
             val query = searchInput.text.toString()
             if (query.isNotEmpty()) {
@@ -46,70 +49,44 @@ class SearchActivity : AppCompatActivity() {
                 Toast.makeText(this, "검색어를 입력하세요", Toast.LENGTH_SHORT).show()
             }
         }
-        val backButton: Button = findViewById(R.id.buttonBackToMain)
-        backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
 
         searchResultsListView.setOnItemClickListener { parent, view, position, id ->
             selectedResult = parent.getItemAtPosition(position) as String
             Toast.makeText(this, "선택된 항목: $selectedResult", Toast.LENGTH_SHORT).show()
-        }
-
-        // 새 버튼을 추가하여 UploadServerActivity로 이동
-        val uploadButton: Button = findViewById(R.id.uploadButton)
-        uploadButton.setOnClickListener {
-            selectedResult?.let { result ->
-                val intent = Intent(this, UploadServerActivity::class.java)
-                intent.putExtra("selectedResult", result)
-                startActivity(intent)
-            } ?: run {
-                Toast.makeText(this, "먼저 항목을 선택하세요", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, UploadServerActivity::class.java).apply {
+                putExtra("selectedResult", selectedResult)
             }
+            startActivity(intent)
         }
     }
-
-    private fun createOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-    }
-
     private fun searchFoodName(query: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val json = JSONObject().apply {
-                    put("name", query)
-                }
-                val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), json.toString())
+                val json = "{\"name\":\"$query\"}"
+                val requestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
                 val request = Request.Builder()
                     .url(serverUrl)
                     .addHeader("Connection", "close")
                     .post(requestBody)
                     .build()
 
-                val response = client.newCall(request).execute()
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    responseBody?.let {
-                        val results = parseJsonResponse(it)
+                client.newCall(request).execute().use { response -> // use 'use' function to automatically close the response body
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        responseBody?.let {
+                            val results = parseJsonResponse(it)
+                            withContext(Dispatchers.Main) {
+                                displayResults(results)
+                            }
+                        } ?: throw Exception("Response body is null")
+                    } else {
                         withContext(Dispatchers.Main) {
-                            displayResults(results)
+                            Toast.makeText(this@SearchActivity, "검색 실패: ${response.message}", Toast.LENGTH_SHORT).show()
                         }
-                    } ?: throw Exception("Response body is null")
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@SearchActivity, "검색 실패: ${response.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
+                Log.e("SearchActivity", "Exception during search", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SearchActivity, "예외 발생: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -118,8 +95,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun parseJsonResponse(json: String): List<String> {
-        val jsonObject = JSONObject(json)
-        val jsonArray = jsonObject.getJSONArray("names")
+        val jsonArray = JSONArray(json)
         val results = mutableListOf<String>()
         for (i in 0 until jsonArray.length()) {
             results.add(jsonArray.getString(i))

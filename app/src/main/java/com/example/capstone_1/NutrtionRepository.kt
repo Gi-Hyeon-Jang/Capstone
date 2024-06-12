@@ -19,7 +19,7 @@ class NutritionRepository(context: Context) {
             put(NutritionDatabaseHelper.COLUMN_TOTAL_SUGARS, uiState.totalSugars)
             put(NutritionDatabaseHelper.COLUMN_TOTAL_FAT, uiState.totalFat)
             put(NutritionDatabaseHelper.COLUMN_TOTAL_SATURATED_FAT, uiState.totalSaturatedFat)
-            put(NutritionDatabaseHelper.COLUMN_TOTAL_TRANS_FAT, uiState.totalTransFat)
+            put(NutritionDatabaseHelper.COLUMN_TOTAL_PROTEIN, uiState.totalProtein)
             put(NutritionDatabaseHelper.COLUMN_TOTAL_CHOLESTEROL, uiState.totalCholesterol)
             put(NutritionDatabaseHelper.COLUMN_TOTAL_SODIUM, uiState.totalSodium)
             put(NutritionDatabaseHelper.COLUMN_TOTAL_VITAMINS, uiState.totalVitamins)
@@ -49,7 +49,7 @@ class NutritionRepository(context: Context) {
                 totalSugars = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_SUGARS)),
                 totalFat = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_FAT)),
                 totalSaturatedFat = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_SATURATED_FAT)),
-                totalTransFat = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_TRANS_FAT)),
+                totalProtein = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_PROTEIN)),
                 totalCholesterol = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_CHOLESTEROL)),
                 totalSodium = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_SODIUM)),
                 totalVitamins = cursor.getDouble(cursor.getColumnIndexOrThrow(NutritionDatabaseHelper.COLUMN_TOTAL_VITAMINS)),

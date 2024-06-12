@@ -2,7 +2,7 @@ package com.example.capstone_1
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capstone_1.databinding.CalenderLayoutBinding
 import java.text.SimpleDateFormat
@@ -19,7 +19,7 @@ class CalenderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = CalenderLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val backButton: Button = findViewById(R.id.buttonBackToMain)
+        val backButton: ImageButton = findViewById(R.id.buttonBackToMain)
         backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -41,7 +41,7 @@ class CalenderActivity : AppCompatActivity() {
             binding.totalSugarsText.text = it.totalSugars.toString()
             binding.totalFatText.text = it.totalFat.toString()
             binding.totalSaturatedFatText.text = it.totalSaturatedFat.toString()
-            binding.totalTransFatText.text = it.totalTransFat.toString()
+            binding.totalTransFatText.text = it.totalProtein.toString()
             binding.totalCholesterolText.text = it.totalCholesterol.toString()
             binding.totalSodiumText.text = it.totalSodium.toString()
             binding.totalVitaminsText.text = it.totalVitamins.toString()

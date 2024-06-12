@@ -48,7 +48,7 @@ class NutritionViewModel : ViewModel() {
             totalSugars = sugarLimit,
             totalFat = fat,
             totalSaturatedFat = saturatedFat,
-            totalTransFat = transFat,
+            totalProtein = protein,
             totalCholesterol = cholesterol,
             totalSodium = sodium,
             totalVitamins = vitamins,

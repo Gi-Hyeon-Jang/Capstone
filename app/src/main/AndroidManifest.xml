@@ -20,14 +20,15 @@
         <activity
             android:name=".CalenderActivity"
             android:exported="false" />
-
+        <activity android:name=".NutritionActivity"
+            android:exported="false"/>
         <activity
             android:name=".UploadServerActivity"
             android:exported="false" />
 
         <activity
             android:name=".UserInputActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.Capstone_1" />
 
         <activity

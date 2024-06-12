@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".CalenderActivity">
@@ -167,10 +168,13 @@
                 android:layout_weight="1" />
         </TableRow>
     </TableLayout>
-    <Button
+
+    <ImageButton
         android:id="@+id/buttonBackToMain"
-        android:layout_width="102dp"
-        android:layout_height="51dp"
-        android:layout_gravity="bottom|start"
-        android:text="MainActivity로 돌아가기" />
+        android:layout_width="62dp"
+        android:layout_height="82dp"
+        android:layout_gravity="start"
+        android:background="#00FFFFFF"
+        android:contentDescription="되돌아가기 버튼"
+        app:srcCompat="@drawable/back" />
 </LinearLayout>

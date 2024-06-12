@@ -15,7 +15,7 @@ class NutritionDatabaseHelper(context: Context) :
                     "$COLUMN_TOTAL_SUGARS REAL," +
                     "$COLUMN_TOTAL_FAT REAL," +
                     "$COLUMN_TOTAL_SATURATED_FAT REAL," +
-                    "$COLUMN_TOTAL_TRANS_FAT REAL," +
+                    "$COLUMN_TOTAL_PROTEIN REAL," +
                     "$COLUMN_TOTAL_CHOLESTEROL REAL," +
                     "$COLUMN_TOTAL_SODIUM REAL," +
                     "$COLUMN_TOTAL_VITAMINS REAL," +
@@ -38,7 +38,7 @@ class NutritionDatabaseHelper(context: Context) :
         const val COLUMN_TOTAL_SUGARS = "total_sugars"
         const val COLUMN_TOTAL_FAT = "total_fat"
         const val COLUMN_TOTAL_SATURATED_FAT = "total_saturated_fat"
-        const val COLUMN_TOTAL_TRANS_FAT = "total_trans_fat"
+        const val COLUMN_TOTAL_PROTEIN = "total_trans_fat"
         const val COLUMN_TOTAL_CHOLESTEROL = "total_cholesterol"
         const val COLUMN_TOTAL_SODIUM = "total_sodium"
         const val COLUMN_TOTAL_VITAMINS = "total_vitamins"

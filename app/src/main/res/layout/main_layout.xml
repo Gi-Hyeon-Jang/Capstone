@@ -11,21 +11,23 @@
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="7dp"
         android:src="@drawable/calorybasis"
-        app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="14dp"
         android:src="@drawable/table_one"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/tableLayout"
@@ -234,33 +236,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="5dp"
         android:src="@drawable/calory_basis"
         app:layout_constraintEnd_toEndOf="@+id/tableLayout"
         app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/rectangle6"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="89dp"
-        android:layout_marginEnd="89dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/logo"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintEnd_toEndOf="@+id/imageView5"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -281,8 +261,8 @@
             android:layout_width="103dp"
             android:layout_height="121dp"
             android:layout_gravity="start"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
             android:background="#00FFFFFF"
             android:src="@drawable/upload" />
 
@@ -309,8 +289,8 @@
 
         <ImageButton
             android:id="@+id/imageButton4"
-            android:layout_width="103dp"
-            android:layout_height="121dp"
+            android:layout_width="91dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="2dp"
@@ -318,5 +298,32 @@
             android:src="@drawable/logoperson" />
 
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/goToNutrition"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="10dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/food"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="13dp"
+        android:src="@drawable/logo2"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
